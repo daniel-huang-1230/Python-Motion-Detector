@@ -2,18 +2,17 @@ import cv2, time, pandas
 from datetime import datetime
 
 first_frame = None
-video = cv2.VideoCapture(0)  #0 is the default camera (webcam) of my computer
 status_list = [None, None]  #to prevent index out of bound error at the beginning
 times = []
 df = pandas.DataFrame(columns= ["Start", "End"])
 
+video = cv2.VideoCapture(0)  #0 is the default camera (webcam) of my computer
 
 time.sleep(2)
 while True:
     check, frame = video.read()
     status = 0
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
     gray = cv2.GaussianBlur(gray, (21, 21), 0)  # for better accuracy
 
     if first_frame is None:
@@ -31,11 +30,11 @@ while True:
     for contour in cnts:
         if cv2.contourArea(contour) < 10000:
             continue
-        else:
-            status = 1   #first object found entering the frame
-            # draw a rectangle around the contour
-            (x, y, w, h) = cv2.boundingRect(contour)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)  # green rectangle
+
+        status = 1   #first object found entering the frame
+        # draw a rectangle around the contour
+        (x, y, w, h) = cv2.boundingRect(contour)
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)  # green rectangle
 
     status_list.append(status)
 
@@ -64,7 +63,7 @@ print(status_list)
 print(times)
 
 for i in range(0, len(times),2):
-    df = df.append({"Start":times[i], "End":times[i+1]}, ignore_index= True)
+    df = df.append({"Start":times[i], "End":times[i+1]}, ignore_index = True)
 
 df.to_csv("Times.csv") #output the csv file for plotting
 
